@@ -13,15 +13,15 @@ require ("draw")
 
 function love.load()
 
-  scrollerFont =love.graphics.newFont("fonts/roboto-black.ttf", 14)
+  scrollerFont =love.graphics.newFont("fonts/Roboto-Black.ttf", 14)
 
-  fullscreen_width, fullscreen_height = love.window.getDesktopDimensions()
-  screen_width, screen_height = 480,270
+  fullscreen_width, fullscreen_height = love.window.getDesktopDimensions()  -- detect (native) desktop resolution
+  screen_width, screen_height = fullscreen_width/4,fullscreen_height/4      -- set low res screensize to the desktop dimensions divided by 4
 
-  love.window.setMode(fullscreen_width, fullscreen_height, {fullscreen=true, vsync=true, centered=true})
+  love.window.setMode(fullscreen_width, fullscreen_height, {fullscreen=false, vsync=true, centered=true}) -- set the windowsize to the desktop size
 
-  canvas = love.graphics.newCanvas(480,270)
-  canvas:setFilter("nearest","nearest")
+  canvas = love.graphics.newCanvas(screen_width,screen_height)              -- create a canvas at the 4th of the actual screensize
+  canvas:setFilter("nearest","nearest")                                     -- No AA needed here!
 
   max_stars1 = 100 -- how many stars
   max_stars2 = 60
@@ -49,28 +49,29 @@ function love.update(dt)
   move_stars(stars02,30*dt) -- updates stars positions
   move_stars(stars03,10*dt)
 
-  love.graphics.setCanvas(canvas)
+  love.graphics.setCanvas(canvas)           -- open canvas for drawing on it
 
-  love.graphics.clear()
-
-  love.graphics.setBlendMode("alpha")
+  love.graphics.clear()                     -- CLS!
 
     renderStars(stars01,1,200,200,200,255)  -- calls renderStars from draw.lua,
     renderStars(stars02,1,100,100,100,255)  -- passes on arrayname, color in rgb
     renderStars(stars03,1,70,70,70,255)     -- and opacity value (255 = opaque)
 
     love.graphics.setColor(100,50,50)
-    love.graphics.rectangle("fill",0,screen_height-50,screen_width,20)
+    love.graphics.rectangle("fill",0,screen_height-51,screen_width,20)
+
+    love.graphics.setColor(255,255,255)
+    love.graphics.rectangle("line", -1, screen_height-51, screen_width+2, 20)
 
     love.graphics.setFont(scrollerFont)
     love.graphics.setColor(255,255,255)
     love.graphics.printf("press << ESCAPE >> to exit",0,screen_height-50,screen_width,"center",0,1,1,0,0,0,0)
 
-  love.graphics.setCanvas()
+  love.graphics.setCanvas()                 -- closing canvas
 end
 
 
 
 function love.draw()
-  love.graphics.draw(canvas,0,0,0,4,4)
+  love.graphics.draw(canvas,0,0,0,4,4)      -- throw canvas on the screen
 end
